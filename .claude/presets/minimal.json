@@ -1,0 +1,12 @@
+{
+  "name": "minimal",
+  "description": "Core components only - security, database, API builder agents with essential commands",
+  "skills": [],
+  "agents": [],
+  "commands": [],
+  "hooks": [],
+  "env": {
+    "FRAMEWORK": "none",
+    "HOOKS_PRESET": "off"
+  }
+}

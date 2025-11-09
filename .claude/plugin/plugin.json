@@ -1,0 +1,71 @@
+{
+  "name": "claude-starter",
+  "version": "1.0.0",
+  "description": "Comprehensive Claude Code starter kit with specialized agents, 40+ skills, quality hooks, and custom commands for modern web development",
+  "author": "Raintree Technology",
+  "license": "MIT",
+  "homepage": "https://github.com/raintree-technology/claude-starter",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/raintree-technology/claude-starter.git"
+  },
+  "keywords": [
+    "claude-code",
+    "agents",
+    "skills",
+    "hooks",
+    "nextjs",
+    "react",
+    "typescript",
+    "quality",
+    "security",
+    "web-development",
+    "fullstack",
+    "starter-kit"
+  ],
+  "claudeCodeVersion": ">=0.8.0",
+  "components": {
+    "agents": [
+      "api-builder",
+      "database-architect",
+      "security-auditor",
+      "type-generator",
+      "writer",
+      "use-effect-less",
+      "plaid-expert"
+    ],
+    "commands": [
+      "build-safe",
+      "clear-cache",
+      "db-migrate",
+      "sync-types",
+      "use-effect-less"
+    ],
+    "hooks": [
+      "check_after_edit",
+      "import_organization",
+      "bundle_size_check",
+      "security_scan",
+      "code_quality",
+      "architecture_check",
+      "react_quality",
+      "accessibility",
+      "advanced_analysis"
+    ],
+    "skills": {
+      "nextjs": 8,
+      "react": 2,
+      "stripe": 11,
+      "supabase": 1,
+      "d3": 5,
+      "bun": 5,
+      "aptos": 5,
+      "qc": 1,
+      "resend": 1,
+      "shelby": 4,
+      "clarity": 1,
+      "skill-builder": 1,
+      "mcp-optimization": 1
+    }
+  }
+}

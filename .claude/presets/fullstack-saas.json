@@ -1,0 +1,31 @@
+{
+  "name": "fullstack-saas",
+  "description": "Production-ready SaaS with Next.js, Stripe, Supabase, and DevOps automation",
+  "skills": [
+    "next",
+    "react",
+    "stripe",
+    "supabase",
+    "devops"
+  ],
+  "agents": [],
+  "commands": [],
+  "hooks": ["security_scan", "check_after_edit", "code_quality", "architecture_check"],
+  "env": {
+    "FRAMEWORK": "nextjs",
+    "ENABLE_STRIPE": "true",
+    "ENABLE_SUPABASE": "true",
+    "HOOKS_PRESET": "all"
+  },
+  "recommended": {
+    "hooks": "all",
+    "envVars": [
+      "STRIPE_SECRET_KEY",
+      "STRIPE_PUBLISHABLE_KEY",
+      "STRIPE_WEBHOOK_SECRET",
+      "SUPABASE_URL",
+      "SUPABASE_ANON_KEY",
+      "SUPABASE_SERVICE_ROLE_KEY"
+    ]
+  }
+}

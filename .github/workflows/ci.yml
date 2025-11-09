@@ -1,0 +1,133 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate Template Structure
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Check required files exist
+        run: |
+          echo "Checking required template files..."
+          test -f setup.sh || { echo "setup.sh missing"; exit 1; }
+          test -f README.md || { echo "README.md missing"; exit 1; }
+          test -f LICENSE || { echo "LICENSE missing"; exit 1; }
+          test -f CLAUDE.md || { echo "CLAUDE.md missing"; exit 1; }
+          test -f .env.example || { echo ".env.example missing"; exit 1; }
+          test -d .claude || { echo ".claude/ directory missing"; exit 1; }
+          test -d .claude/core || { echo ".claude/core/ directory missing"; exit 1; }
+          test -d .claude/examples || { echo ".claude/examples/ directory missing"; exit 1; }
+          echo "✓ All required files present"
+
+      - name: Validate directory structure
+        run: |
+          echo "Validating .claude/ structure..."
+          test -d .claude/core/agents || { echo "core/agents missing"; exit 1; }
+          test -d .claude/core/commands || { echo "core/commands missing"; exit 1; }
+          test -d .claude/examples/skills || { echo "examples/skills missing"; exit 1; }
+          test -d .claude/examples/hooks || { echo "examples/hooks missing"; exit 1; }
+          test -d .claude/docs || { echo "docs missing"; exit 1; }
+          test -d .claude/presets || { echo "presets missing"; exit 1; }
+          echo "✓ Directory structure valid"
+
+      - name: Count components
+        run: |
+          echo "Counting template components..."
+          CORE_AGENTS=$(find .claude/core/agents -name "*.md" | wc -l)
+          CORE_COMMANDS=$(find .claude/core/commands -name "*.md" | wc -l)
+          EXAMPLE_SKILLS=$(find .claude/examples/skills -name "skill.md" | wc -l)
+          EXAMPLE_HOOKS=$(find .claude/examples/hooks -name "*.ts" -not -name "cache.ts" -not -name "config.ts" | wc -l)
+
+          echo "Core Agents: $CORE_AGENTS"
+          echo "Core Commands: $CORE_COMMANDS"
+          echo "Example Skills: $EXAMPLE_SKILLS"
+          echo "Example Hooks: $EXAMPLE_HOOKS"
+
+          test $CORE_AGENTS -ge 3 || { echo "Expected at least 3 core agents"; exit 1; }
+          test $CORE_COMMANDS -ge 9 || { echo "Expected at least 9 core commands"; exit 1; }
+          test $EXAMPLE_SKILLS -ge 39 || { echo "Expected at least 39 example skills"; exit 1; }
+          test $EXAMPLE_HOOKS -ge 10 || { echo "Expected at least 10 example hooks"; exit 1; }
+
+          echo "✓ Component counts validated"
+
+      - name: Validate setup script
+        run: |
+          echo "Validating setup.sh..."
+          test -x setup.sh || { echo "setup.sh not executable"; exit 1; }
+          bash -n setup.sh || { echo "setup.sh syntax error"; exit 1; }
+          echo "✓ setup.sh is valid and executable"
+
+      - name: Validate preset files
+        run: |
+          echo "Validating preset JSON files..."
+          for preset in .claude/presets/*.json; do
+            if [ -f "$preset" ]; then
+              echo "Checking $preset..."
+              node -e "JSON.parse(require('fs').readFileSync('$preset', 'utf8'))" || { echo "$preset is invalid JSON"; exit 1; }
+            fi
+          done
+          echo "✓ All preset files are valid JSON"
+
+      - name: Check for broken symlinks
+        run: |
+          echo "Checking for broken symlinks..."
+          BROKEN=$(find .claude -type l ! -exec test -e {} \; -print)
+          if [ -n "$BROKEN" ]; then
+            echo "Broken symlinks found:"
+            echo "$BROKEN"
+            exit 1
+          fi
+          echo "✓ No broken symlinks"
+
+      - name: Validate hook executability
+        run: |
+          echo "Checking hook files are executable..."
+          find .claude/examples/hooks -name "*.ts" -type f ! -perm -u+x -print | while read file; do
+            echo "Warning: $file is not executable"
+          done
+          echo "✓ Hook validation complete"
+
+  test-setup:
+    name: Test Setup Script
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        preset: [minimal, nextjs-full, fullstack-saas]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Test setup with preset ${{ matrix.preset }}
+        run: |
+          # Create temporary test directory
+          mkdir -p /tmp/test-project
+          cd /tmp/test-project
+
+          # Run setup script with preset
+          $GITHUB_WORKSPACE/setup.sh --preset ${{ matrix.preset }}
+
+          # Verify .claude directory was created
+          test -d .claude || { echo "Setup failed to create .claude directory"; exit 1; }
+          test -f .env.example || { echo "Setup failed to create .env.example"; exit 1; }
+
+          echo "✓ Setup script works with ${{ matrix.preset }} preset"

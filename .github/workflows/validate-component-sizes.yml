@@ -1,0 +1,155 @@
+name: Validate Component Sizes
+
+on:
+  pull_request:
+    paths:
+      - '.claude/core/agents/**/*.md'
+      - '.claude/core/commands/**/*.md'
+      - '.claude/examples/skills/**/*.md'
+  push:
+    branches:
+      - main
+    paths:
+      - '.claude/core/agents/**/*.md'
+      - '.claude/core/commands/**/*.md'
+      - '.claude/examples/skills/**/*.md'
+
+jobs:
+  validate-sizes:
+    runs-on: ubuntu-latest
+    name: Validate Component Size Limits
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate Agent Sizes (<500 lines)
+        run: |
+          echo "Checking agent file sizes..."
+          VIOLATIONS=0
+
+          # Find all agent files (excluding docs/)
+          while IFS= read -r file; do
+            LINES=$(wc -l < "$file")
+            if [ "$LINES" -gt 500 ]; then
+              echo "❌ $file exceeds 500 lines ($LINES lines)"
+              VIOLATIONS=$((VIOLATIONS + 1))
+            else
+              echo "✅ $file is within limit ($LINES lines)"
+            fi
+          done < <(find .claude/core/agents -name "*.md" -not -path "*/docs/*")
+
+          if [ $VIOLATIONS -gt 0 ]; then
+            echo ""
+            echo "❌ $VIOLATIONS agent(s) exceed the 500-line limit"
+            echo "Please extract reference documentation to docs/ subdirectory"
+            exit 1
+          fi
+
+          echo ""
+          echo "✅ All agents are within size limits"
+
+      - name: Validate Skill Sizes (<900 lines)
+        run: |
+          echo "Checking skill file sizes..."
+          VIOLATIONS=0
+          WARNINGS=0
+
+          # Find all skill files
+          while IFS= read -r file; do
+            LINES=$(wc -l < "$file")
+            if [ "$LINES" -gt 900 ]; then
+              echo "❌ $file exceeds 900 lines ($LINES lines)"
+              VIOLATIONS=$((VIOLATIONS + 1))
+            elif [ "$LINES" -gt 600 ]; then
+              echo "⚠️  $file is large ($LINES lines) - consider splitting"
+              WARNINGS=$((WARNINGS + 1))
+            else
+              echo "✅ $file is within limit ($LINES lines)"
+            fi
+          done < <(find .claude/examples/skills -name "skill.md" -o -name "SKILL.md")
+
+          if [ $VIOLATIONS -gt 0 ]; then
+            echo ""
+            echo "❌ $VIOLATIONS skill(s) exceed the 900-line limit"
+            echo "Please split into sub-skills or extract docs"
+            exit 1
+          fi
+
+          if [ $WARNINGS -gt 0 ]; then
+            echo ""
+            echo "⚠️  $WARNINGS skill(s) are large (acceptable but consider refactoring)"
+          fi
+
+          echo ""
+          echo "✅ All skills are within acceptable size limits"
+
+      - name: Validate Command Sizes (<250 lines)
+        run: |
+          echo "Checking command file sizes..."
+          VIOLATIONS=0
+          WARNINGS=0
+
+          # Find all command files
+          while IFS= read -r file; do
+            LINES=$(wc -l < "$file")
+            if [ "$LINES" -gt 250 ]; then
+              # Allow up to 260 lines with warning
+              if [ "$LINES" -le 260 ]; then
+                echo "⚠️  $file slightly exceeds 250 lines ($LINES lines) - acceptable"
+                WARNINGS=$((WARNINGS + 1))
+              else
+                echo "❌ $file exceeds 250 lines ($LINES lines)"
+                VIOLATIONS=$((VIOLATIONS + 1))
+              fi
+            else
+              echo "✅ $file is within limit ($LINES lines)"
+            fi
+          done < <(find .claude/core/commands -name "*.md" -o -name "*.MD")
+
+          if [ $VIOLATIONS -gt 0 ]; then
+            echo ""
+            echo "❌ $VIOLATIONS command(s) exceed the 250-line limit"
+            echo "Please streamline or extract detailed instructions"
+            exit 1
+          fi
+
+          if [ $WARNINGS -gt 0 ]; then
+            echo ""
+            echo "⚠️  $WARNINGS command(s) slightly over 250 lines (acceptable)"
+          fi
+
+          echo ""
+          echo "✅ All commands are within acceptable size limits"
+
+      - name: Generate Size Report
+        if: always()
+        run: |
+          echo "# Component Size Report" > size-report.md
+          echo "" >> size-report.md
+
+          echo "## Agents (<500 lines)" >> size-report.md
+          echo "" >> size-report.md
+          find .claude/core/agents -name "*.md" -not -path "*/docs/*" -exec wc -l {} \; | \
+            awk '{print "- " $2 ": " $1 " lines"}' >> size-report.md
+          echo "" >> size-report.md
+
+          echo "## Skills (<900 lines)" >> size-report.md
+          echo "" >> size-report.md
+          find .claude/examples/skills -name "skill.md" -o -name "SKILL.md" -exec wc -l {} \; | \
+            awk '{print "- " $2 ": " $1 " lines"}' | head -20 >> size-report.md
+          echo "" >> size-report.md
+
+          echo "## Commands (<250 lines)" >> size-report.md
+          echo "" >> size-report.md
+          find .claude/core/commands -name "*.md" -exec wc -l {} \; | \
+            awk '{print "- " $2 ": " $1 " lines"}' >> size-report.md
+
+          cat size-report.md
+
+      - name: Upload Size Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: component-size-report
+          path: size-report.md

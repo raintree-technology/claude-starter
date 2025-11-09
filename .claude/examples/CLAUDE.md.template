@@ -1,0 +1,148 @@
+# Claude Starter Kit - Project Memory Template
+
+<!--
+  USAGE INSTRUCTIONS:
+  1. Copy this file to YOUR_PROJECT_ROOT/.claude/CLAUDE.md (NOT in the .claude directory)
+  2. Customize the content below for your specific project architecture
+  3. Remove this comment block after copying
+
+  This template is designed for Next.js/Supabase projects but can be adapted for any stack.
+-->
+
+**NOTE:** This is a project-specific template for Next.js/Supabase projects. Copy to `.claude/CLAUDE.md` in your project root and customize for your architecture.
+
+This file provides persistent context for Claude Code sessions in projects using the Claude Starter Kit.
+
+## Project Architecture
+
+### Service Layer Pattern
+- **Routes** (app/api/*/route.ts) - HTTP concerns only (30-50 lines)
+- **Services** (lib/db/services/*.ts) - Business logic (testable, reusable)
+- **Repository** (Drizzle queries) - Data access
+
+Routes should be thin controllers that delegate to service functions.
+
+### Type Management
+- Centralize types in `@/lib/types`
+- Use `type-generator` agent for syncing Supabase types
+- Avoid duplicating types across modules
+
+### Caching Strategy
+- Use `@/lib/cache` for Redis-backed distributed caching
+- Avoid in-memory caching (Map, object literals)
+- Use Next.js Cache Components ('use cache', cacheLife, cacheTag)
+
+### Utility Functions
+- Import from `@/lib/utils` instead of reimplementing
+- formatters, async helpers, error classes all available centrally
+
+## Development Workflow
+
+### Before Committing
+```bash
+/build-safe
+```
+Runs typecheck, lint, and build to ensure production readiness.
+
+### Working with Database
+```bash
+/db-migrate        # Run migrations
+/sync-types        # Sync types from Supabase
+```
+
+### Code Reviews
+```bash
+/review-pr [number]
+```
+Comprehensive security, type safety, performance, and accessibility review.
+
+### Project Health
+```bash
+/health-check
+```
+Verify configuration, dependencies, and project setup.
+
+## Quality Standards
+
+### Code Quality
+- Max file length: 500 lines
+- Max function length: 50 lines
+- Max cyclomatic complexity: 15
+- Max parameters: 4
+- Max nesting depth: 3
+
+### Security
+- No hardcoded secrets
+- Use environment variables for API keys
+- Validate all inputs with Zod
+- Sanitize HTML with DOMPurify
+
+### Accessibility
+- All images need alt text
+- Interactive elements need keyboard support
+- Maintain heading hierarchy
+- Follow WCAG 2.1 Level A/AA standards
+
+### React Best Practices
+- Use TypeScript interfaces for props (no 'any')
+- Validate useEffect/useMemo/useCallback dependencies
+- Add keys to .map() elements
+- Consider React.memo for large components (>100 lines)
+
+## Agents Available
+
+When working on specific tasks, these agents are available:
+
+- **api-builder**: Creating/modifying Next.js API routes
+- **database-architect**: Database schema, migrations, Drizzle ORM
+- **security-auditor**: Security scanning before deploying sensitive changes
+- **type-generator**: TypeScript type management and syncing
+- **use-effect-less**: Refactoring React components to remove unnecessary useEffect
+- **writer**: Technical documentation, blog posts, content writing
+- **plaid-expert**: Banking data integration and transaction enrichment
+
+## Common Patterns
+
+### API Route Creation
+1. Use service layer pattern (extract logic to lib/db/services)
+2. Use `withAuthRoute` or `withAuthGetRoute` wrappers
+3. Validate inputs with Zod schemas
+4. Use `apiSuccess()` and `handleError()` for responses
+5. Configure rate limiting appropriately
+6. Log with requestId, traceId, userId
+
+### Database Queries
+1. Always filter by user_id for data isolation
+2. Use transactions for multi-step operations
+3. Verify ownership before updates/deletes
+4. Use Drizzle query builder (avoid raw SQL)
+
+### Error Handling
+1. Use custom error classes (ValidationError, AuthorizationError, etc.)
+2. Use `handleError()` for consistent error responses
+3. Include request/trace IDs in all logs
+4. Never expose stack traces in production
+
+### Testing
+1. Unit test service functions (they're pure)
+2. Integration test API routes
+3. Use fixtures for database tests
+4. Mock external services
+
+## References
+
+For detailed guidance, see:
+- [API Builder Documentation](.claude/examples/agents/docs/api-builder-ref.md)
+- [Database Architect Documentation](.claude/examples/agents/docs/database-architect-ref.md)
+- [Security Best Practices](.claude/examples/agents/docs/security-auditor-ref.md)
+- [React Quality Guidelines](.claude/examples/hooks/README.md#react-quality)
+- [Hooks Configuration](.claude/examples/hooks/config.ts)
+
+## Import Examples
+
+Need additional context? Import specific documentation:
+```markdown
+@.claude/examples/agents/docs/api-builder-ref.md
+@.claude/examples/hooks/README.md
+@.claude/examples/skills/next/next-api-architect/README.md
+```

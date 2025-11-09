@@ -1,0 +1,18 @@
+{
+  "name": "react-focused",
+  "description": "React development with best practices and accessibility",
+  "skills": [
+    "react"
+  ],
+  "agents": ["use-effect-less"],
+  "commands": [],
+  "hooks": ["react_quality", "accessibility", "check_after_edit"],
+  "env": {
+    "FRAMEWORK": "react",
+    "HOOKS_PRESET": "react-focused"
+  },
+  "recommended": {
+    "hooks": "react-focused",
+    "additionalSkills": ["d3"]
+  }
+}

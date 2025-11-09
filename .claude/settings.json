@@ -1,0 +1,6 @@
+{
+  "hooks": {
+    "PostToolUse": []
+  },
+  "comment": "This is a minimal starter configuration. To enable hooks, commands, or skills, copy from examples/ directory. See docs/quickstart.md for details."
+}

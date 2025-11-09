@@ -1,0 +1,71 @@
+# Claude Code local settings
+.claude/settings.local.json
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+ehthumbs.db
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Testing
+coverage/
+.nyc_output
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+.vercel
+
+# Environment variables (never commit secrets!)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Temporary files
+*.tmp
+.temp/
+.cache/
+
+# Backups
+*.backup
+*.bak
+.claude.backup/
+*.tar.gz
+backup-*/
+
+# Development
+.claude/docs/development/.cache/
+.claude/**/.cache/
+.claude/**/*.log
+.claude/output_reports/
+
+# External repositories (should be cloned separately)
+claude-cookbooks/

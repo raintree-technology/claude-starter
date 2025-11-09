@@ -1,0 +1,21 @@
+{
+  "name": "stripe-commerce",
+  "description": "E-commerce application with Stripe payments and Next.js",
+  "skills": [
+    "next",
+    "react",
+    "stripe"
+  ],
+  "agents": [],
+  "commands": [],
+  "hooks": ["security_scan", "check_after_edit"],
+  "env": {
+    "FRAMEWORK": "nextjs",
+    "ENABLE_STRIPE": "true",
+    "HOOKS_PRESET": "security-focused"
+  },
+  "recommended": {
+    "hooks": "security-focused",
+    "envVars": ["STRIPE_SECRET_KEY", "STRIPE_PUBLISHABLE_KEY", "STRIPE_WEBHOOK_SECRET"]
+  }
+}

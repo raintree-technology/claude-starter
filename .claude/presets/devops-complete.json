@@ -1,0 +1,18 @@
+{
+  "name": "devops-complete",
+  "description": "Complete DevOps automation with GitHub Actions, git hooks, and Vercel deployment",
+  "skills": [
+    "devops"
+  ],
+  "agents": [],
+  "commands": [],
+  "hooks": ["security_scan", "architecture_check"],
+  "env": {
+    "FRAMEWORK": "none",
+    "HOOKS_PRESET": "security-focused"
+  },
+  "recommended": {
+    "hooks": "security-focused",
+    "envVars": ["VERCEL_TOKEN", "VERCEL_ORG_ID", "VERCEL_PROJECT_ID"]
+  }
+}

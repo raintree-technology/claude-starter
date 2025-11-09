@@ -1,0 +1,14 @@
+{
+  "name": "complextropy-analyzer",
+  "version": "1.0.0",
+  "description": "Sophistication theory-based code complexity analyzer",
+  "main": "resources/analyzer.ts",
+  "scripts": {
+    "analyze": "bun run resources/analyzer.ts"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}

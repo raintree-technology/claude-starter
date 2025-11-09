@@ -1,0 +1,83 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validate template structure
+        run: |
+          echo "Validating template before release..."
+          test -f setup.sh || { echo "setup.sh missing"; exit 1; }
+          test -x setup.sh || { echo "setup.sh not executable"; exit 1; }
+          test -d .claude || { echo ".claude/ directory missing"; exit 1; }
+          test -f README.md || { echo "README.md missing"; exit 1; }
+          test -f CLAUDE.md || { echo "CLAUDE.md missing"; exit 1; }
+          echo "✓ Template structure validated"
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          if [ -z "$PREVIOUS_TAG" ]; then
+            COMMITS=$(git log --oneline --pretty=format:"- %s (%h)" HEAD)
+          else
+            COMMITS=$(git log --oneline --pretty=format:"- %s (%h)" $PREVIOUS_TAG..HEAD)
+          fi
+          echo "commits<<EOF" >> $GITHUB_OUTPUT
+          echo "$COMMITS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          body: |
+            # Claude Starter Kit ${{ github.ref_name }}
+
+            Production-ready Claude Code configuration template.
+
+            ## What's Changed
+
+            ${{ steps.changelog.outputs.commits }}
+
+            ## Installation
+
+            \`\`\`bash
+            git clone https://github.com/raintree-technology/claude-starter
+            cd claude-starter
+            ./setup.sh --interactive
+            \`\`\`
+
+            ## Quick Links
+
+            - [Documentation](.claude/docs/README.md)
+            - [Quick Start](.claude/docs/quickstart.md)
+            - [Customization Guide](.claude/docs/customization.md)
+
+            **Full Changelog**: https://github.com/${{ github.repository }}/compare/${{ steps.changelog.outputs.previous }}...${{ github.ref_name }}
+          draft: false
+          prerelease: ${{ contains(github.ref_name, '-') }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

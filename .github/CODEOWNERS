@@ -1,0 +1,32 @@
+# Code Owners
+#
+# These owners will be automatically requested for review when a PR modifies files in their area.
+#
+# Learn more: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owners for everything in the repo
+# * @your-username
+
+# Core configuration and settings
+/.claude/ @your-username
+/.github/ @your-username
+/package.json @your-username
+/tsconfig.json @your-username
+
+# Documentation
+/README.md @your-username
+/.claude/docs/ @your-username
+
+# Workflows and automation
+/.github/workflows/ @your-username
+/.claude/core/commands/ @your-username
+
+# Skills and agents
+/.claude/examples/skills/ @your-username
+/.claude/core/agents/ @your-username
+
+# Example patterns:
+# /src/auth/ @auth-team
+# /src/api/ @backend-team
+# /src/components/ @frontend-team
+# *.md @docs-team

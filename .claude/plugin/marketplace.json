@@ -1,0 +1,37 @@
+{
+  "name": "claude-starter-marketplace",
+  "description": "Official marketplace for the Claude Starter Kit plugin",
+  "owner": {
+    "name": "Raintree Technology",
+    "url": "https://github.com/raintree-technology"
+  },
+  "plugins": [
+    {
+      "name": "claude-starter",
+      "description": "Comprehensive starter kit with agents, skills, hooks, and commands for modern web development",
+      "version": "1.0.0",
+      "author": "Raintree Technology",
+      "license": "MIT",
+      "source": {
+        "type": "github",
+        "owner": "raintree-technology",
+        "repo": "claude-starter",
+        "ref": "main"
+      },
+      "keywords": [
+        "nextjs",
+        "react",
+        "typescript",
+        "quality",
+        "security",
+        "fullstack"
+      ],
+      "components": {
+        "agents": 7,
+        "skills": 46,
+        "hooks": 9,
+        "commands": 8
+      }
+    }
+  ]
+}

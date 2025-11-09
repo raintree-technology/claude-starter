@@ -1,0 +1,19 @@
+{
+  "name": "nextjs-full",
+  "description": "Complete Next.js development setup with all Next.js and React skills",
+  "skills": [
+    "next",
+    "react"
+  ],
+  "agents": [],
+  "commands": [],
+  "hooks": ["check_after_edit"],
+  "env": {
+    "FRAMEWORK": "nextjs",
+    "HOOKS_PRESET": "quality-focused"
+  },
+  "recommended": {
+    "hooks": "quality-focused",
+    "additionalSkills": ["devops"]
+  }
+}
