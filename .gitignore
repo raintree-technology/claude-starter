@@ -1,0 +1,83 @@
+# Claude Code local settings
+.claude/settings.local.json
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+ehthumbs.db
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Testing
+coverage/
+.nyc_output
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+.vercel
+
+# Zig build artifacts
+.zig-cache/
+zig-cache/
+
+# Environment variables (never commit secrets!)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Temporary files
+*.tmp
+.temp/
+.cache/
+
+# Project tracking files (temporary reports)
+AUDIT.md
+COMPLETION_REPORT.md
+*_REPORT.md
+build_simple.sh
+
+# Backups
+*.backup
+*.bak
+.claude.backup/
+*.tar.gz
+backup-*/
+
+# Development
+.claude/**/.cache/
+.claude/**/*.log
+
+# Claude Code backups
+.claude.backup.*
+
+# Archive and documentation (not distributed)
+/archive/
+.claude/skills/**/docs/

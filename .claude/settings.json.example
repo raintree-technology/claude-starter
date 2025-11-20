@@ -1,0 +1,44 @@
+{
+  "comment": "Example hooks configuration - copy to settings.json to enable",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/settings-backup.sh",
+            "description": "Backup critical config files before editing"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/secret-scanner.sh",
+            "description": "Prevent accidentally writing sensitive data"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/toon-validator.sh",
+            "description": "Validate TOON format syntax"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/markdown-formatter.sh",
+            "description": "Auto-format markdown files"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/file-size-monitor.sh",
+            "description": "Warn about files exceeding size limits"
+          }
+        ]
+      }
+    ]
+  }
+}
